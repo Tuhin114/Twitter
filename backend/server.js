@@ -23,6 +23,7 @@ const PORT = process.env.PORT || 5000;
 console.log(process.env.MONGO_URI);
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Use the authRoute module to handle routes starting with "/api/auth"
 // This sets up the authentication-related endpoints for the application
