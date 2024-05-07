@@ -22,6 +22,8 @@ const PORT = process.env.PORT || 5000;
 // This helps verify that the correct database connection information is being used
 console.log(process.env.MONGO_URI);
 
+app.use(express.json());
+
 // Use the authRoute module to handle routes starting with "/api/auth"
 // This sets up the authentication-related endpoints for the application
 app.use("/api/auth", authRoute);

@@ -44,3 +44,39 @@ The schema also includes a timestamps option, which automatically adds createdAt
 
 The User model is then created from the schema using the mongoose.model() method.
 Finally, the User model is exported so that it can be used in other parts of the application.
+
+## Important Notes 3
+
+**Import Statements:**
+**generateTokenAndSetCookie:** This function is imported from a utility file (generateToken.js). It's used to generate a JSON Web Token (JWT) and set it as a cookie in the response headers.
+**User:** This is the model representing a user in the application. It's imported from a file (user.model.js) where the schema and methods for the user model are defined.
+**bcrypt:** This library is used for password hashing. It's imported for securely hashing passwords before storing them in the database.
+**Signup Function (signup):**
+This function handles the signup process for new users.
+It extracts user input (fullName, username, email, password) from the request body using object destructuring.
+Validates the email format using a regular expression.
+Checks if the username and email are already taken by querying the database.
+Validates the password length (must be at least 6 characters).
+Hashes the password using bcrypt.
+Creates a new user instance with the hashed password.
+Saves the new user to the database.
+Generates a JWT token and sets it as a cookie in the response headers.
+Sends a success response with user data (excluding sensitive fields like password).
+**Login Function (login):**
+Handles the user login process.
+Extracts username and password from the request body.
+Finds the user in the database by username.
+Compares the provided password with the hashed password stored in the database using bcrypt.
+If the user or password is incorrect, returns an error.
+If login is successful, generates a JWT token and sets it as a cookie in the response headers.
+Sends a success response with user data (excluding sensitive fields).
+**Logout Function (logout):**
+Clears the JWT cookie by setting its expiration (maxAge) to 0.
+Sends a success response indicating successful logout.
+**GetMe Function (getMe):**
+Retrieves details of the currently logged-in user.
+Uses the user ID stored in the JWT token (req.user._id) to find the user in the database.
+Excludes the password field from the user data.
+Sends the user data in the response.
+
+Each function is wrapped in a try-catch block to handle errors gracefully. If an error occurs during the execution of any function, it logs the error and sends an internal server error response (status code 500) with a generic error message.
