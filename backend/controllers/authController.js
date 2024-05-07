@@ -1,5 +1,5 @@
 // Importing necessary dependencies
-import { generateTokenAndSetCookie } from "../lib/utils/generateToken.js"; // Importing token generation utility function
+import { generateTokenAndSetCookie } from "../utils/generateToken.js"; // Importing token generation utility function
 import User from "../models/user.model.js"; // Importing the User model
 import bcrypt from "bcryptjs"; // Importing bcrypt for password hashing
 
