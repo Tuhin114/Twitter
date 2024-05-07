@@ -80,3 +80,39 @@ Excludes the password field from the user data.
 Sends the user data in the response.
 
 Each function is wrapped in a try-catch block to handle errors gracefully. If an error occurs during the execution of any function, it logs the error and sends an internal server error response (status code 500) with a generic error message.
+
+## Important Notes 4
+
+This code defines a function named generateTokenAndSetCookie, which is responsible for generating a JSON Web Token (JWT) and setting it as a cookie in the response headers. Here's a detailed explanation of each part:
+
+**Import Statement:**
+import jwt from "jsonwebtoken";: This imports the jsonwebtoken library, which is used for generating JWTs.
+**Function Definition (generateTokenAndSetCookie):**
+This function takes two parameters:
+    userId: The ID of the user for whom the JWT is being generated.
+
+    res: The response object from the Express.js framework, to which the JWT will be attached as a cookie.
+**Inside the function:**
+
+    jwt.sign(): This method is used to sign the JWT with the user ID and a secret key. It takes three arguments:
+        The payload to be encoded into the JWT ({ userId }).
+
+        The secret key used to sign the token (process.env.JWT_SECRET).
+
+        Additional options, such as the token expiration time (expiresIn: "15d" specifies a 15-day expiration).
+    
+    res.cookie(): This method sets the JWT as a cookie in the response object. It takes four arguments:
+        The name of the cookie ("jwt").
+
+        The value of the cookie (the generated JWT token).
+    
+    Additional options:
+        maxAge: Specifies the maximum age of the cookie in milliseconds (15 days in this case).
+
+        httpOnly: Makes the cookie accessible only through HTTP requests, preventing access via client-side scripts (helps prevent XSS attacks).
+        
+        sameSite: Specifies the SameSite attribute of the cookie, which helps prevent CSRF attacks. It's set to "strict".
+
+        secure: Specifies whether the cookie should only be sent over HTTPS. It's set to true if the environment is not development.
+
+This function encapsulates the process of generating a JWT with the user ID, setting it as an HTTP-only and secure cookie in the response headers, and configuring additional security measures such as SameSite and secure attributes.
