@@ -7,6 +7,7 @@ import dotenv from "dotenv";
 import authRoute from "./routes/authRoutes.js";
 // Import the connectMongoDB function, which establishes a connection to the MongoDB database
 import connectMongoDB from "./db/connectMongoDB.js";
+import cookieParser from "cookie-parser";
 
 // Load environment variables from the.env file using dotenv
 // This allows the application to access environment-specific configurations
@@ -24,6 +25,8 @@ console.log(process.env.MONGO_URI);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(cookieParser());
 
 // Use the authRoute module to handle routes starting with "/api/auth"
 // This sets up the authentication-related endpoints for the application
