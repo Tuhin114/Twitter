@@ -1,3 +1,5 @@
+import User from "../models/userModel.js";
+
 // Function to get a user's profile
 export const getUserProfile = async (req, res) => {
   // Destructure the 'username' parameter from the request object
@@ -6,7 +8,7 @@ export const getUserProfile = async (req, res) => {
   try {
     // Use the User model to find one user with the given username
     // and exclude the password field from the selection
-    const user = await User.findOne({ username }).select("-password");
+    const user = await Userser.findOne({ username }).select("-password");
 
     // If no user is found, return a 404 Not Found status with an error message
     if (!user) return res.status(404).json({ message: "User not found" });
