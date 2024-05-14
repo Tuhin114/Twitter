@@ -1,6 +1,6 @@
 // Import the express library and the protectRoute middleware
 import express from "express";
-import { protectRoute } from "../middleware/protectRoute";
+import { protectRoute } from "../middleware/protectRoute.js";
 
 const router = express.Router();
 
