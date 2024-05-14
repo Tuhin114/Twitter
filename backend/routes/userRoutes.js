@@ -18,10 +18,10 @@ router.get("/profile/:username", protectRoute, getUserProfile);
 
 // Route to follow or unfollow a user by id
 // This route is protected and requires authentication
-router.get("/follow/:id", protectRoute, followUnfollowUser);
+router.post("/follow/:id", protectRoute, followUnfollowUser);
 
 // Route to update user profile
 // This route is protected and requires authentication
-// router.get("/update", protectRoute, updateUserProfile);
+// router.post("/update", protectRoute, updateUserProfile);
 
 export default router;
