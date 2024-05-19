@@ -81,3 +81,42 @@ export const followUnfollowUser = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+// Exported asynchronous function to get suggested users
+export const getSuggestedUsers = async (req, res) => {
+  try {
+    // Retrieve the current user's ID from the request object
+    const userId = req.user._id;
+
+    // Find the current user and select only the 'following' field
+    const usersFollowedByMe = await User.findById(userId).select("following");
+
+    // Use MongoDB aggregation to match all users except the current user and sample 10 of them
+    const users = await User.aggregate([
+      {
+        $match: {
+          _id: { $ne: userId },
+        },
+      },
+      { $sample: { size: 10 } },
+    ]);
+
+    // Filter the sampled users to exclude those already followed by the current user
+    const filteredUsers = users.filter(
+      (user) => !usersFollowedByMe.following.includes(user._id)
+    );
+
+    // Slice the first 4 users from the filtered users array as suggested users
+    const suggestedUsers = filteredUsers.slice(0, 4);
+
+    // Remove password property from each suggested user object before sending the response
+    suggestedUsers.forEach((user) => (user.password = null));
+
+    // Send the suggested users as a successful response with a status code of 200
+    res.status(200).json(suggestedUsers);
+  } catch (error) {
+    // Log the error message and send an internal server error response with a status code of 500
+    console.log("Error in getSuggestedUsers: ", error.message);
+    res.status(500).json({ error: error.message });
+  }
+};

@@ -4,6 +4,7 @@ import { protectRoute } from "../middleware/protectRoute.js";
 import {
   followUnfollowUser,
   getUserProfile,
+  getSuggestedUsers,
 } from "../controllers/userContoller.js";
 
 const router = express.Router();
@@ -14,7 +15,7 @@ router.get("/profile/:username", protectRoute, getUserProfile);
 
 // Route to get suggested users
 // This route is protected and requires authentication
-// router.get("/suggested", protectRoute, getUserProfile);
+router.get("/suggested", protectRoute, getSuggestedUsers);
 
 // Route to follow or unfollow a user by id
 // This route is protected and requires authentication

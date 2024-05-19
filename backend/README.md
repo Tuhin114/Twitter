@@ -409,3 +409,33 @@ In this section of the code, a new notification instance is created using the `N
    - The `await` keyword is used to ensure that the notification is saved asynchronously, allowing the execution flow to wait until the save operation completes before proceeding further.
 
 By creating and saving this notification, the system ensures that the user being followed receives a notification, informing them about the action taken by another user within the application. This enhances user engagement and facilitates interaction between users within the platform.
+
+## Important Notes 11
+
+This function retrieves suggested users for the current user based on the users they are already following. Let's walk through the steps:
+
+1. **Getting Current User's ID:**
+   - The function starts by extracting the ID of the current user (`userId`) from the request object (`req.user._id`).
+
+2. **Finding Users Followed by the Current User:**
+   - It queries the database to find the current user by their ID and selects only the `following` field. This retrieves an array of IDs of users whom the current user is following.
+
+3. **Finding Random Users:**
+   - It uses the MongoDB aggregation framework to find users other than the current user (`_id: { $ne: userId }`).
+   - The `$sample` stage randomly selects a specified number of users (in this case, 10) from the collection.
+
+4. **Filtering Users:**
+   - It filters out the users who are already being followed by the current user.
+   - This is done by comparing the IDs of users obtained in the previous step with the IDs of users whom the current user is following. Users already followed are excluded from the `filteredUsers` array.
+
+5. **Limiting and Sanitizing Data:**
+   - It limits the number of suggested users to a maximum of 4 by slicing the `filteredUsers` array.
+   - For security purposes, it removes the password field from each suggested user object before sending the response.
+
+6. **Sending Response:**
+   - It sends a JSON response with a status code of 200 containing the array of suggested users to the client.
+
+7. **Error Handling:**
+   - If any error occurs during the process, it logs the error and sends an error response with an appropriate status code.
+
+This function efficiently provides suggested users to the current user, excluding those whom they are already following, thereby enhancing user discovery and engagement within the application.
