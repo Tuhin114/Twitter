@@ -1,3 +1,4 @@
+import Notification from "../models/notificationModel.js";
 import User from "../models/userModel.js";
 
 // Function to get a user's profile
@@ -58,7 +59,19 @@ export const followUnfollowUser = async (req, res) => {
       await User.findByIdAndUpdate(id, { $push: { followers: req.user._id } });
       await User.findByIdAndUpdate(req.user._id, { $push: { following: id } });
 
-      // Send a notification to the user being followed
+      // Create a new notification instance to send to the user being followed
+      // This notification is of type "follow", indicating that the current user (req.user) is following the user being modified (userToModify)
+      const newNotification = new Notification({
+        // The type of notification, in this case, a follow notification
+        type: "follow",
+        // The ID of the user who is performing the follow action (the current user)
+        from: req.user._id,
+        // The ID of the user being followed (the user being modified)
+        to: userToModify._id,
+      });
+
+      // Save the new notification to the database
+      await newNotification.save();
 
       // Return a success message
       res.status(200).json({ message: "User followed successfully" });
