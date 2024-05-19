@@ -5,6 +5,7 @@ import {
   followUnfollowUser,
   getUserProfile,
   getSuggestedUsers,
+  updateUser,
 } from "../controllers/userContoller.js";
 
 const router = express.Router();
@@ -23,6 +24,6 @@ router.post("/follow/:id", protectRoute, followUnfollowUser);
 
 // Route to update user profile
 // This route is protected and requires authentication
-// router.post("/update", protectRoute, updateUserProfile);
+router.post("/update", protectRoute, updateUser);
 
 export default router;

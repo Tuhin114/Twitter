@@ -1,3 +1,6 @@
+import bcrypt from "bcryptjs";
+import { v2 as cloudinary } from "cloudinary";
+
 import Notification from "../models/notificationModel.js";
 import User from "../models/userModel.js";
 
@@ -117,6 +120,102 @@ export const getSuggestedUsers = async (req, res) => {
   } catch (error) {
     // Log the error message and send an internal server error response with a status code of 500
     console.log("Error in getSuggestedUsers: ", error.message);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const updateUser = async (req, res) => {
+  // Extracting user data and images from the request body
+  const { fullName, email, username, currentPassword, newPassword, bio, link } =
+    req.body;
+  let { profileImg, coverImg } = req.body;
+
+  // Getting the user ID from the request
+  const userId = req.user._id;
+
+  try {
+    // Finding the user by ID
+    let user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Checking if both current password and new password are provided
+    if (
+      (!newPassword && currentPassword) ||
+      (!currentPassword && newPassword)
+    ) {
+      return res.status(400).json({
+        error: "Please provide both current password and new password",
+      });
+    }
+
+    // If current password and new password are provided, check if they match
+    if (currentPassword && newPassword) {
+      // Comparing the provided current password with the user's password
+      const isMatch = await bcrypt.compare(currentPassword, user.password);
+      if (!isMatch)
+        return res.status(400).json({ error: "Current password is incorrect" });
+
+      // Checking if the new password meets the length requirement
+      if (newPassword.length < 6) {
+        return res
+          .status(400)
+          .json({ error: "Password must be at least 6 characters long" });
+      }
+
+      // Hashing the new password using bcrypt
+      const salt = await bcrypt.genSalt(10);
+      user.password = await bcrypt.hash(newPassword, salt);
+    }
+
+    // Handling profile image update
+    if (profileImg) {
+      // If the user already has a profile image, delete it from Cloudinary
+      if (user.profileImg) {
+        // https://res.cloudinary.com/dyfqon1v6/image/upload/v1712997552/zmxorcxexpdbh8r0bkjb.png
+        await cloudinary.uploader.destroy(
+          user.profileImg.split("/").pop().split(".")[0]
+        );
+      }
+
+      // Uploading the new profile image to Cloudinary
+      const uploadedResponse = await cloudinary.uploader.upload(profileImg);
+      profileImg = uploadedResponse.secure_url;
+    }
+
+    // Handling cover image update
+    if (coverImg) {
+      // If the user already has a cover image, delete it from Cloudinary
+      if (user.coverImg) {
+        await cloudinary.uploader.destroy(
+          user.coverImg.split("/").pop().split(".")[0]
+        );
+      }
+
+      // Uploading the new cover image to Cloudinary
+      const uploadedResponse = await cloudinary.uploader.upload(coverImg);
+      coverImg = uploadedResponse.secure_url;
+    }
+
+    // Updating the user's information
+    user.fullName = fullName || user.fullName;
+    user.email = email || user.email;
+    user.username = username || user.username;
+    user.bio = bio || user.bio;
+    user.link = link || user.link;
+    user.profileImg = profileImg || user.profileImg;
+    user.coverImg = coverImg || user.coverImg;
+
+    // Saving the updated user information
+    user = await user.save();
+
+    // Removing the password from the response
+    user.password = null;
+
+    // Returning the updated user information
+    return res.status(200).json(user);
+  } catch (error) {
+    // Logging any errors that occur during the update process
+    console.log("Error in updateUser: ", error.message);
     res.status(500).json({ error: error.message });
   }
 };
