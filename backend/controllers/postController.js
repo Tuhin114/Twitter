@@ -99,3 +99,49 @@ export const deletePost = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+// Import necessary dependencies and define the commentOnPost function
+export const commentOnPost = async (req, res) => {
+  // Try to execute the following code, catching any errors that may occur
+  try {
+    // Destructure the 'text' property from the request body
+    const { text } = req.body;
+
+    // Extract the 'id' parameter from the request and assign it to 'postId'
+    const postId = req.params.id;
+
+    // Extract the user's ID from the request and assign it to 'userId'
+    const userId = req.user._id;
+
+    // Check if the 'text' property exists in the request body
+    if (!text) {
+      // If not, return a 400 Bad Request response with an error message
+      return res.status(400).json({ error: "Text field is required" });
+    }
+
+    // Find the post with the given ID
+    const post = await Post.findById(postId);
+
+    // Check if the post exists
+    if (!post) {
+      // If not, return a 404 Not Found response with an error message
+      return res.status(404).json({ error: "Post not found" });
+    }
+
+    // Create a new comment object with the user's ID and the comment text
+    const comment = { user: userId, text };
+
+    // Add the new comment to the post's comments array
+    post.comments.push(comment);
+
+    // Save the updated post to the database
+    await post.save();
+
+    // Return a 200 OK response with the updated post
+    res.status(200).json(post);
+  } catch (error) {
+    // If an error occurs, log it to the console and return a 500 Internal Server Error response
+    console.log("Error in commentOnPost controller: ", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};

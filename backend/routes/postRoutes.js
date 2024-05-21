@@ -2,7 +2,7 @@ import express from "express";
 import { protectRoute } from "../middleware/protectRoute.js";
 import {
   // Function to comment on a post
-  //   commentOnPost,
+  commentOnPost,
   // Function to create a new post
   createPost,
   // Function to delete a post
@@ -34,7 +34,7 @@ router.post("/create", protectRoute, createPost);
 // Route to like or unlike a post
 // router.post("/like/:id", protectRoute, likeUnlikePost);
 // Route to comment on a post
-// router.post("/comment/:id", protectRoute, commentOnPost);
+router.post("/comment/:id", protectRoute, commentOnPost);
 // Route to delete a post
 router.delete("/:id", protectRoute, deletePost);
 

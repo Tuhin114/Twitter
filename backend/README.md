@@ -808,3 +808,91 @@ res.status(500).json({ error: "Internal server error" });
 8. **Error Handling:** Errors are logged and a 500 error is returned if something goes wrong.
 
 This function ensures that posts are deleted securely, with proper validation and authorization checks, and associated resources (like images) are cleaned up.
+
+## Important Notes 17
+
+The provided code defines a function `commentOnPost` that handles adding a comment to a specific post. This function ensures that the comment includes text and that the post exists before saving the comment to the database. Let's break down the code in detail:
+
+### Function Definition2
+
+```export const commentOnPost = async (req, res) => {```
+
+### Try-Catch Block2
+
+A try-catch block is used to handle potential errors during the execution of the function.
+
+```try {```
+
+### Extracting Data from Request1
+
+1. **Text:** The comment text is extracted from the request body.
+    ```const { text } = req.body;```
+
+2. **Post ID:** The ID of the post to be commented on is extracted from the request parameters.
+    ```const postId = req.params.id;```
+
+3. **User ID:** The user ID of the authenticated user is extracted from the request (typically added by authentication middleware).
+    ```const userId = req.user._id;```
+
+### Comment Text Validation
+
+The function checks if the comment text is provided. If not, it returns a 400 status code with an error message.
+
+``if (!text) {
+      return res.status(400).json({ error: "Text field is required" });
+    }``
+
+### Finding the Post1
+
+The function attempts to find the post in the database using the post ID.
+
+```const post = await Post.findById(postId);```
+
+### Post Existence Check
+
+If the post doesn't exist, it returns a 404 status code with an error message.
+
+``if (!post) {
+      return res.status(404).json({ error: "Post not found" });
+    }``
+
+### Adding the Comment
+
+A comment object is created and added to the post's comments array.
+
+1. **Create Comment Object:** The comment object contains the user ID and text.
+    ```const comment = { user: userId, text };```
+
+2. **Push Comment to Post:** The comment is added to the post's `comments` array.
+    ```post.comments.push(comment);```
+
+3. **Save Post:** The updated post, now including the new comment, is saved to the database.
+    ```await post.save();```
+
+### Response
+
+The updated post, including the new comment, is returned in the response with a 200 status code.
+
+```res.status(200).json(post);```
+
+### Error Handling2
+
+If an error occurs during the execution, it's caught, logged to the console, and a 500 status code with an error message is returned.
+
+``} catch (error) {
+    console.log("Error in commentOnPost controller: ", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};``
+
+### Summary3
+
+1. **Extracts necessary data from the request.**
+2. **Validates the presence of comment text.**
+3. **Finds the post in the database.**
+4. **Validates the existence of the post.**
+5. **Creates a comment object and adds it to the post's comments array.**
+6. **Saves the updated post to the database.**
+7. **Handles errors and responds with appropriate status codes and messages.**
+
+This function ensures that comments can be added to posts securely and that necessary validations and error handling are in place to manage potential issues during the process.
