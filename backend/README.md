@@ -479,3 +479,25 @@ The `updateUser` function allows users to update their profile information, incl
    - If any error occurs during the process, it logs the error message and returns a 500 error with the message.
 
 This function ensures a comprehensive and secure update process for user profiles, handling password updates, image uploads, and validation efficiently.
+
+## Important Notes 13
+
+This code defines a Mongoose schema for a "Post" model. Mongoose is a popular Object Data Modeling (ODM) library for MongoDB.
+
+Breaking Down the Code
+```import mongoose from "mongoose"```;: This line imports the Mongoose library.
+```const postSchema = new mongoose.Schema({...});```: This line creates a new Mongoose schema for the "Post" model.
+The schema definition is an object with several properties:
+**user**: This property represents the user who created the post. It's an ObjectId that references the "User" model, and it's required.
+**text**: This property represents the text content of the post. It's a string.
+**img**: This property represents the image associated with the post. It's a string.
+**likes**: This property represents the users who have liked the post. It's an array of ObjectIds that reference the "User" model.
+**comments**: This property represents the comments on the post. It's an array of objects with two properties:
+text: The text content of the comment. It's a required string.
+**user**: The user who made the comment. It's an ObjectId that references the "User" model, and it's required.
+```timestamps: true```: This option tells Mongoose to automatically add createdAt and updatedAt timestamps to the schema.
+``const Post = mongoose.model("Post", postSchema);``: This line creates a Mongoose model from the schema definition.
+```export default Post;```: This line exports the Post model as the default export of the module.
+
+**In Summary**
+This code defines a Mongoose schema for a "Post" model, which includes properties for the user who created the post, the post's text and image, likes, and comments. The schema also includes automatic timestamps. The code then creates a Mongoose model from the schema and exports it as the default export of the module.
