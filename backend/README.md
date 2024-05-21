@@ -773,8 +773,8 @@ If the post contains an image, the function deletes the image from Cloudinary.
     ```const imgId = post.img.split("/").pop().split(".")[0];```
 
 3. **Delete Image:** The `cloudinary.uploader.destroy` method is called to delete the image using the extracted image ID.
-    ```await cloudinary.uploader.destroy(imgId);
-		}```
+
+    ```await cloudinary.uploader.destroy(imgId);}```
 
 #### Deleting the Post
 
