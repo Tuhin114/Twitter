@@ -501,3 +501,107 @@ text: The text content of the comment. It's a required string.
 
 **In Summary**
 This code defines a Mongoose schema for a "Post" model, which includes properties for the user who created the post, the post's text and image, likes, and comments. The schema also includes automatic timestamps. The code then creates a Mongoose model from the schema and exports it as the default export of the module.
+
+## Important Notes 14
+
+The provided code is an implementation of an Express.js router for handling various routes related to posts in a web application. It imports necessary functions from the `postController.js` file and a middleware function `protectRoute` from `protectRoute.js` to secure the routes. Let's go through the code in detail:
+
+### Imports
+
+1. **Express:** The Express framework is imported to create the router.
+
+   ```import express from "express";```
+
+2. **Middleware:** The `protectRoute` middleware is imported to secure routes, ensuring only authenticated users can access them.
+    ```import { protectRoute } from "../middleware/protectRoute.js";```
+
+3. **Controller Functions:** Various functions related to post operations are imported from the `postController.js` file.
+    ``import {
+      commentOnPost,
+      createPost,
+      deletePost,
+      getAllPosts,
+      getFollowingPosts,
+      getLikedPosts,
+      getUserPosts,
+      likeUnlikePost,
+    } from "../controllers/postController.js";``
+
+### Router Setup
+
+An Express router is created to define the endpoints for the posts:
+```const router = express.Router();```
+
+### Routes Definition
+
+Each route is associated with a specific HTTP method (GET, POST, DELETE) and endpoint. The `protectRoute` middleware is applied to all routes to ensure they are protected.
+
+1. **Retrieve all posts:**
+    - **Endpoint:** `/all`
+    - **Method:** GET
+    - **Handler:** `getAllPosts`
+    - **Description:** Retrieves all posts.
+    ```router.get("/all", protectRoute, getAllPosts);```
+
+2. **Retrieve posts from followed users:**
+    - **Endpoint:** `/following`
+    - **Method:** GET
+    - **Handler:** `getFollowingPosts`
+    - **Description:** Retrieves posts from users that the authenticated user is following.
+    ```router.get("/following", protectRoute, getFollowingPosts);```
+
+3. **Retrieve posts liked by the user:**
+    - **Endpoint:** `/likes/:id`
+    - **Method:** GET
+    - **Handler:** `getLikedPosts`
+    - **Description:** Retrieves posts liked by a specific user identified by `id`.
+    ```router.get("/likes/:id", protectRoute, getLikedPosts);```
+
+4. **Retrieve posts by a specific user:**
+    - **Endpoint:** `/user/:username`
+    - **Method:** GET
+    - **Handler:** `getUserPosts`
+    - **Description:** Retrieves posts created by a specific user identified by `username`.
+    ```router.get("/user/:username", protectRoute, getUserPosts);```
+
+5. **Create a new post:**
+    - **Endpoint:** `/create`
+    - **Method:** POST
+    - **Handler:** `createPost`
+    - **Description:** Creates a new post.
+    ```router.post("/create", protectRoute, createPost);```
+
+6. **Like or unlike a post:**
+    - **Endpoint:** `/like/:id`
+    - **Method:** POST
+    - **Handler:** `likeUnlikePost`
+    - **Description:** Likes or unlikes a post identified by `id`.
+    ```router.post("/like/:id", protectRoute, likeUnlikePost);```
+
+7. **Comment on a post:**
+    - **Endpoint:** `/comment/:id`
+    - **Method:** POST
+    - **Handler:** `commentOnPost`
+    - **Description:** Adds a comment to a post identified by `id`.
+    ```router.post("/comment/:id", protectRoute, commentOnPost);```
+
+8. **Delete a post:**
+    - **Endpoint:** `/:id`
+    - **Method:** DELETE
+    - **Handler:** `deletePost`
+    - **Description:** Deletes a post identified by `id`.
+    ```router.delete("/:id", protectRoute, deletePost);```
+
+### Exporting the Router
+
+Finally, the router is exported to be used in the main application file.
+```export default router;```
+
+### Summary*
+
+- **Router Creation:** An Express router is created.
+- **Middleware Application:** The `protectRoute` middleware is applied to all routes to ensure only authenticated users can access them.
+- **Route Definitions:** Routes are defined for various post operations including retrieval, creation, liking, commenting, and deletion of posts.
+- **Export:** The configured router is exported for use in the main application.
+
+This setup allows for organized and secure handling of post-related operations in the web application.
