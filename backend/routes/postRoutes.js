@@ -6,7 +6,7 @@ import {
   // Function to create a new post
   createPost,
   // Function to delete a post
-  //   deletePost,
+  deletePost,
   // Function to retrieve all posts
   //   getAllPosts,
   // Function to retrieve posts from followed users
@@ -36,6 +36,6 @@ router.post("/create", protectRoute, createPost);
 // Route to comment on a post
 // router.post("/comment/:id", protectRoute, commentOnPost);
 // Route to delete a post
-// router.delete("/:id", protectRoute, deletePost);
+router.delete("/:id", protectRoute, deletePost);
 
 export default router;
