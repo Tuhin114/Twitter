@@ -1,4 +1,5 @@
 import Post from "../models/postModel.js";
+import Notification from "../models/notificationModel.js";
 import User from "../models/userModel.js";
 import { v2 as cloudinary } from "cloudinary";
 
@@ -142,6 +143,75 @@ export const commentOnPost = async (req, res) => {
   } catch (error) {
     // If an error occurs, log it to the console and return a 500 Internal Server Error response
     console.log("Error in commentOnPost controller: ", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// Exported asynchronous function to like or unlike a post
+export const likeUnlikePost = async (req, res) => {
+  try {
+    // Retrieve the user ID from the request object
+    const userId = req.user._id;
+
+    // Extract the post ID from the request parameters
+    const { id: postId } = req.params;
+
+    // Find the post by its ID
+    const post = await Post.findById(postId);
+
+    // Check if the post exists
+    if (!post) {
+      // Return a 404 error if the post is not found
+      return res.status(404).json({ error: "Post not found" });
+    }
+
+    // Determine if the user has already liked the post
+    const userLikedPost = post.likes.includes(userId);
+
+    if (userLikedPost) {
+      // If the user has liked the post, unlike it
+
+      // Update the post by removing the user's ID from the likes array
+      await Post.updateOne({ _id: postId }, { $pull: { likes: userId } });
+
+      // Update the user by removing the post's ID from the likedPosts array
+      await User.updateOne({ _id: userId }, { $pull: { likedPosts: postId } });
+
+      // Filter the post's likes array to remove the user's ID
+      const updatedLikes = post.likes.filter(
+        (id) => id.toString() !== userId.toString()
+      );
+
+      // Return the updated likes array with a 200 status code
+      res.status(200).json(updatedLikes);
+    } else {
+      // If the user has not liked the post, like it
+
+      // Add the user's ID to the post's likes array
+      post.likes.push(userId);
+
+      // Update the user by adding the post's ID to the likedPosts array
+      await User.updateOne({ _id: userId }, { $push: { likedPosts: postId } });
+
+      // Save the updated post
+      await post.save();
+
+      // Create a new notification for the post's author
+      const notification = new Notification({
+        from: userId,
+        to: post.user,
+        type: "like",
+      });
+
+      // Save the new notification
+      await notification.save();
+
+      // Return the updated likes array with a 200 status code
+      res.status(200).json(post.likes);
+    }
+  } catch (error) {
+    // Log any errors and return a 500 error response
+    console.log("Error in likeUnlikePost controller: ", error);
     res.status(500).json({ error: "Internal server error" });
   }
 };
