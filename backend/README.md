@@ -1109,3 +1109,107 @@ Absolutely! Let's go through each part of the code step by step, explaining what
 - **Catch Block**: Handles any errors by logging them and returning a 500 status with an error message.
 
 This detailed explanation should help you understand each part of the `getAllPosts` function and what it does at every step.
+
+## Important Notes 20
+
+Let's go through the `getLikedPosts` function step by step to understand each part and its purpose. This function retrieves posts that a specific user has liked.
+
+### Function Definition4
+
+```export const getLikedPosts = async (req, res) => {```
+
+- **`export const getLikedPosts`**: This declares a named export for the `getLikedPosts` function, making it available for import in other files.
+- **`async (req, res)`**: This defines an asynchronous function that takes two parameters:
+  - `req`: The request object, which contains information about the HTTP request.
+  - `res`: The response object, which is used to send back the desired HTTP response.
+
+### Extracting User ID
+
+```const userId = req.params.id;```
+
+- **`const userId = req.params.id`**: Extracts the `userId` from the URL parameters (`req.params`). This ID is used to find the specific user whose liked posts we want to retrieve.
+
+### Try-Catch Block4
+
+```try {```
+
+- **`try`**: Begins a block of code that will attempt to execute. If any error occurs within this block, control will pass to the `catch` block.
+
+### Finding the User
+
+``const user = await User.findById(userId);
+if (!user) return res.status(404).json({ error: "User not found" });``
+
+- **`const user = await User.findById(userId)`**:
+  - `User.findById(userId)` initiates a query to find a user in the `User` collection by their ID.
+  - `await` ensures the function waits for the query to complete before continuing.
+- **`if (!user) return res.status(404).json({ error: "User not found" })`**:
+  - Checks if a user was found. If not, it returns a 404 status code and a JSON response with an error message, indicating that the user was not found.
+
+### Finding Liked Posts
+
+```const likedPosts = await Post.find({ _id: { $in: user.likedPosts } })```
+
+- **`const likedPosts = await Post.find({ _id: { $in: user.likedPosts } })`**:
+  - `Post.find({ _id: { $in: user.likedPosts } })` initiates a query to find all posts whose IDs are in the user's `likedPosts` array.
+  - `$in` is a MongoDB operator that matches any value in the specified array (`user.likedPosts`).
+  - `await` ensures the function waits for the query to complete before continuing.
+
+### Populating User Information in Posts
+
+``.populate({
+    path: "user",
+    select: "-password",
+})``
+
+- **`.populate({ path: "user", select: "-password" })`**:
+  - `populate` is a method used to replace the user ID references in the posts with the actual user documents from the `User` collection.
+  - `path: "user"` specifies the field to populate, which is the `user` field in each post.
+  - `select: "-password"` ensures that the `password` field is excluded from the populated user documents, enhancing security.
+
+### Populating User Information in Comments
+
+``.populate({
+    path: "comments.user",
+    select: "-password",
+});``
+
+- **`.populate({ path: "comments.user", select: "-password" })`**:
+  - Similar to the previous `populate`, this targets the `comments.user` field.
+  - It populates the user information for each comment's `user` field.
+  - `select: "-password"` excludes passwords from the returned user documents, ensuring sensitive information is not exposed.
+
+### Returning the Liked Posts
+
+```res.status(200).json(likedPosts);```
+
+- **`res.status(200).json(likedPosts)`**:
+  - Sends an HTTP 200 status code along with the `likedPosts` array as the JSON response. This array contains the posts that the user has liked, with user and comment user details populated.
+
+### Catch Block for Error Handling4
+
+``} catch (error) {
+    console.log("Error in getLikedPosts controller: ", error);
+    res.status(500).json({ error: "Internal server error" });
+}``
+
+- **`catch (error)`**:
+  - If any error occurs within the `try` block, execution jumps to this `catch` block.
+- **`console.log("Error in getLikedPosts controller: ", error)`**:
+  - Logs the error to the server console for debugging purposes. This helps developers understand what went wrong.
+- **`res.status(500).json({ error: "Internal server error" })`**:
+  - Sends an HTTP 500 status code along with a JSON response containing an error message. This indicates a server error to the client.
+
+### Summary6
+
+- **Definition**: The function is declared and exported for use in other files.
+- **Extracting User ID**: Retrieves the user ID from the request parameters.
+- **Try Block**:
+  - Finds the user by their ID.
+  - If the user is not found, returns a 404 status with an error message.
+  - Finds posts liked by the user using the IDs in the `likedPosts` array.
+  - Populates user information for each post and comment, excluding passwords.
+- **Return Liked Posts**: Sends the liked posts in the response with a 200 status.
+- **Catch Block**: Handles any errors by logging them and returning a 500 status with an error message.
+
+This step-by-step explanation should help you understand each portion of the `getLikedPosts` function and its purpose in the process of retrieving a user's liked posts.

@@ -246,3 +246,36 @@ export const getAllPosts = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+export const getLikedPosts = async (req, res) => {
+  // Extract the user ID from the request parameters
+  const userId = req.params.id;
+
+  try {
+    // Retrieve the user document from the database using the provided ID
+    const user = await User.findById(userId);
+
+    // If the user is not found, return a 404 error with a corresponding message
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    // Find all posts that the user has liked, and populate the user and comment information
+    const likedPosts = await Post.find({ _id: { $in: user.likedPosts } })
+      .populate({
+        path: "user",
+        select: "-password", // exclude the password field from the user document
+      })
+      .populate({
+        path: "comments.user",
+        select: "-password", // exclude the password field from the comment user document
+      });
+
+    // Return the liked posts in the response with a 200 status code
+    res.status(200).json(likedPosts);
+  } catch (error) {
+    // Log any errors that occur during the execution of this function
+    console.log("Error in getLikedPosts controller: ", error);
+
+    // Return a 500 error with a corresponding message if an error occurs
+    res.status(500).json({ error: "Internal server error" });
+  }
+};

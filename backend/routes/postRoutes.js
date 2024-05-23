@@ -12,7 +12,7 @@ import {
   // Function to retrieve posts from followed users
   //   getFollowingPosts,
   // Function to retrieve posts liked by the user
-  //   getLikedPosts,
+  getLikedPosts,
   // Function to retrieve posts by a specific user
   //   getUserPosts,
   // Function to like or unlike a post
@@ -26,7 +26,7 @@ router.get("/all", protectRoute, getAllPosts);
 // Route to retrieve posts from followed users
 // router.get("/following", protectRoute, getFollowingPosts);
 // Route to retrieve posts liked by the user
-// router.get("/likes/:id", protectRoute, getLikedPosts);
+router.get("/likes/:id", protectRoute, getLikedPosts);
 // Route to retrieve posts by a specific user
 // router.get("/user/:username", protectRoute, getUserPosts);
 // Route to create a new post
