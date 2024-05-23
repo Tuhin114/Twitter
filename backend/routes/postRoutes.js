@@ -10,11 +10,11 @@ import {
   // Function to retrieve all posts
   getAllPosts,
   // Function to retrieve posts from followed users
-  //   getFollowingPosts,
+  getFollowingPosts,
   // Function to retrieve posts liked by the user
   getLikedPosts,
   // Function to retrieve posts by a specific user
-  //   getUserPosts,
+  getUserPosts,
   // Function to like or unlike a post
   likeUnlikePost,
 } from "../controllers/postController.js";
@@ -24,11 +24,11 @@ const router = express.Router();
 // Route to retrieve all posts
 router.get("/all", protectRoute, getAllPosts);
 // Route to retrieve posts from followed users
-// router.get("/following", protectRoute, getFollowingPosts);
+router.get("/following", protectRoute, getFollowingPosts);
 // Route to retrieve posts liked by the user
 router.get("/likes/:id", protectRoute, getLikedPosts);
 // Route to retrieve posts by a specific user
-// router.get("/user/:username", protectRoute, getUserPosts);
+router.get("/user/:username", protectRoute, getUserPosts);
 // Route to create a new post
 router.post("/create", protectRoute, createPost);
 // Route to like or unlike a post

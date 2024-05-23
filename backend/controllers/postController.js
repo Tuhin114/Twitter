@@ -279,3 +279,77 @@ export const getLikedPosts = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+// Exported asynchronous function to fetch posts from users that the authenticated user is following
+export const getFollowingPosts = async (req, res) => {
+  try {
+    // Retrieve the ID of the authenticated user
+    const userId = req.user._id;
+
+    // Find the authenticated user in the User model
+    const user = await User.findById(userId);
+
+    // Return a 404 error if the user is not found
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    // Extract the list of users that the authenticated user is following
+    const following = user.following;
+
+    // Find all posts created by the users that the authenticated user is following
+    // Sort the posts by creation date in descending order
+    // Populate the 'user' field with the user data, excluding the password
+    // Populate the 'comments.user' field with the user data, excluding the password
+    const feedPosts = await Post.find({ user: { $in: following } })
+      .sort({ createdAt: -1 })
+      .populate({
+        path: "user",
+        select: "-password",
+      })
+      .populate({
+        path: "comments.user",
+        select: "-password",
+      });
+
+    // Return a 200 OK response with the fetched posts
+    res.status(200).json(feedPosts);
+  } catch (error) {
+    // Log the error and return a 500 Internal Server Error response
+    console.log("Error in getFollowingPosts controller: ", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// Exported function to get user posts
+export const getUserPosts = async (req, res) => {
+  try {
+    // Destructure 'username' from request parameters
+    const { username } = req.params;
+
+    // Find user by username
+    const user = await User.findOne({ username });
+
+    // Return 404 error if user not found
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    // Find all posts by user, sorted by creation date in descending order
+    // Populate 'user' field with user details, excluding password
+    // Populate 'comments.user' field with user details, excluding password
+    const posts = await Post.find({ user: user._id })
+      .sort({ createdAt: -1 })
+      .populate({
+        path: "user",
+        select: "-password",
+      })
+      .populate({
+        path: "comments.user",
+        select: "-password",
+      });
+
+    // Return 200 OK response with posts
+    res.status(200).json(posts);
+  } catch (error) {
+    // Log error and return 500 Internal Server Error response
+    console.log("Error in getUserPosts controller: ", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
