@@ -215,3 +215,34 @@ export const likeUnlikePost = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+// Exported asynchronous function to get all posts from the database
+export const getAllPosts = async (req, res) => {
+  try {
+    // Find all posts in the database, sorted by creation time in descending order
+    const posts = await Post.find()
+      .sort({ createdAt: -1 })
+      // Populate the 'user' field of each post, selecting all fields except 'password'
+      .populate({
+        path: "user",
+        select: "-password",
+      })
+      // Populate the 'user' field of each comment in each post, selecting all fields except 'password'
+      .populate({
+        path: "comments.user",
+        select: "-password",
+      });
+
+    // If no posts are found, return an empty array with a 200 status code
+    if (posts.length === 0) {
+      return res.status(200).json([]);
+    }
+
+    // Return the posts with a 200 status code
+    res.status(200).json(posts);
+  } catch (error) {
+    // Log the error and return a 500 status code with an error message
+    console.log("Error in getAllPosts controller: ", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};

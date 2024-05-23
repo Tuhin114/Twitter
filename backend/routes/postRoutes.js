@@ -8,7 +8,7 @@ import {
   // Function to delete a post
   deletePost,
   // Function to retrieve all posts
-  //   getAllPosts,
+  getAllPosts,
   // Function to retrieve posts from followed users
   //   getFollowingPosts,
   // Function to retrieve posts liked by the user
@@ -22,7 +22,7 @@ import {
 const router = express.Router();
 
 // Route to retrieve all posts
-// router.get("/all", protectRoute, getAllPosts);
+router.get("/all", protectRoute, getAllPosts);
 // Route to retrieve posts from followed users
 // router.get("/following", protectRoute, getFollowingPosts);
 // Route to retrieve posts liked by the user
