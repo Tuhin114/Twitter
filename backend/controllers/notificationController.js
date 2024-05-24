@@ -27,3 +27,27 @@ export const getNotifications = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+// Exporting a function called 'deleteNotifications' which is an asynchronous function
+export const deleteNotifications = async (req, res) => {
+  // Using a try block to attempt the execution of the code inside it
+  try {
+    // Destructuring the '_id' property from the 'user' object in the 'req' object
+    const userId = req.user._id;
+
+    // Using the 'await' keyword to wait for the 'deleteMany' method to finish executing
+    // The 'deleteMany' method is used to delete multiple documents from the 'Notification' collection
+    // The documents to be deleted are selected based on the 'to' property being equal to 'userId'
+    await Notification.deleteMany({ to: userId });
+
+    // Sending a response with a status code of 200 and a message indicating that the notifications were deleted successfully
+    res.status(200).json({ message: "Notifications deleted successfully" });
+  } catch (error) {
+    // Using a catch block to handle any errors that occur during the execution of the code in the try block
+    // Logging the error message to the console
+    console.log("Error in deleteNotifications function", error.message);
+
+    // Sending a response with a status code of 500 and an error message indicating that there was an internal server error
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};

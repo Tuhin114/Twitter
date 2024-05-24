@@ -1507,3 +1507,43 @@ Let's break down the provided code step by step to understand what it does.
        - Sends a 500 Internal Server Error response to the client, indicating that something went wrong on the server.
 
 In summary, the `getNotifications` function retrieves all notifications for the authenticated user, marks them as read, and returns them to the client. If an error occurs, it logs the error and sends a 500 status response.
+
+## Important Notes 25
+
+Let's break down the `deleteNotifications` function step by step to understand its purpose and functionality.
+
+1. **Exporting the `deleteNotifications` Function**:
+   - `export const deleteNotifications = async (req, res) => { ... }`
+     - This exports an asynchronous function named `deleteNotifications` that handles the logic for deleting notifications for a user.
+
+2. **Function Body**:
+   - **Extracting User ID**:
+     - `const userId = req.user._id;`
+       - This extracts the user ID from the `req.user` object. It assumes that the `protectRoute` middleware has added the authenticated user's information to the `req` object.
+
+   - **Deleting Notifications**:
+     - `await Notification.deleteMany({ to: userId });`
+       - This line deletes all notifications for the user from the database. It finds all notifications where the `to` field matches the `userId` and deletes them.
+
+   - **Sending Response**:
+     - `res.status(200).json({ message: "Notifications deleted successfully" });`
+       - This line sends a response to the client with a 200 OK status, indicating that the notifications have been successfully deleted. It includes a message confirming the deletion.
+
+3. **Error Handling**:
+   - `catch (error) { ... }`
+     - This block catches any errors that occur during the execution of the try block.
+     - `console.log("Error in deleteNotifications function", error.message);`
+       - Logs the error message to the console for debugging purposes.
+     - `res.status(500).json({ error: "Internal Server Error" });`
+       - Sends a 500 Internal Server Error response to the client, indicating that something went wrong on the server.
+
+### Summary9
+
+The `deleteNotifications` function is responsible for deleting all notifications for the authenticated user from the database. It performs the following steps:
+
+1. Extracts the user ID from the request object.
+2. Deletes all notifications addressed to that user.
+3. Sends a success response to the client if the operation is successful.
+4. Logs any errors to the console and sends an error response to the client if an error occurs.
+
+This function, together with the `getNotifications` function, allows users to manage their notifications by retrieving and deleting them.
