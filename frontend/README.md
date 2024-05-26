@@ -7,3 +7,6 @@
    5. npx tailwindcss init
    6. copy paste in tailwind.configure.js
    7. update index.css
+   8. daisy UI
+   9. `npm i -D daisyui@latest`
+   10. plugins
