@@ -11,3 +11,4 @@
    9. `npm i -D daisyui@latest`
    10. plugins
    11. see the theme change in index.html
+   12. `npm install react-router-dom react-icons`
