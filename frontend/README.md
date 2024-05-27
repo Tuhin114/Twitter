@@ -215,6 +215,44 @@ export default SignUpPage;
 - **Export Statement**:
   - Exports the `SignUpPage` component for use in other parts of the application.
 
-### Summary
+### Summary1
 
 The `SignUpPage` component is a form-based page where users can sign up by entering their email, username, full name, and password. It uses state management to handle form inputs and provides a basic structure with styling and iconography to create a user-friendly interface. The form submission currently logs the form data to the console, and the layout adjusts responsively for different screen sizes.
+
+## Important Note 2
+
+Let's go through the provided `XSvg` component with detailed comments explaining each part of the code:
+
+### XSvg Component
+
+### Detailed Explanation
+
+#### Component Definition
+
+- **Component Name:** `XSvg`
+  - This component is a stateless functional component that returns an SVG element.
+- **Props Handling:**
+  - The component accepts `props` and spreads them onto the SVG element using the `{...props}` syntax. This allows for passing additional properties such as `className`, `style`, etc., to the SVG element.
+
+#### SVG Element
+
+- **aria-hidden:**
+  - `aria-hidden="true"`: This attribute hides the SVG from screen readers, which is useful if the SVG is purely decorative and doesn't convey any meaningful information.
+- **viewBox:**
+  - `viewBox="0 0 24 24"`: This attribute defines the coordinate system and aspect ratio of the SVG. The viewBox is set to cover a 24x24 unit square.
+- **Spreading Props:**
+  - `{...props}`: This syntax spreads any additional props passed to the `XSvg` component onto the SVG element itself.
+
+#### Path Element
+
+- **d Attribute:**
+  - `<path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />`
+  - The `d` attribute contains a series of commands and coordinates that define the shape of the SVG path. These commands are part of the SVG path syntax and describe the movements to draw the shape.
+
+### Export Statement
+
+- **Default Export:**
+  - `export default XSvg;`
+  - This statement exports the `XSvg` component as the default export from the module, allowing it to be imported and used in other files.
+
+By including detailed comments and explanations, the code is easier to understand and maintain. This level of detail ensures that anyone reading the code can grasp the purpose and functionality of each part of the component.
