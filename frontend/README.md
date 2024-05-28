@@ -946,3 +946,103 @@ The `RightPanel` component serves as a sidebar for suggesting users to follow. I
 - **Loading State**: Placeholder skeletons during data fetching.
 - **Loaded State**: A list of user suggestions with profile links and follow buttons.
 - **Responsive Design**: Visible only on large screens, styled for a clean, sticky sidebar appearance.
+
+## Important Note 7
+
+### `RightPanelSkeleton` Component Overview
+
+The `RightPanelSkeleton` component is used to display a loading placeholder while the actual user data for the right panel is being fetched. It provides a visual cue to users that the content is loading and improves the perceived performance of the application.
+
+### Component Structure
+
+The `RightPanelSkeleton` component renders a placeholder mimicking the layout of the user suggestion items. It uses a series of `div` elements with specific classes to achieve this.
+
+### Implementation
+
+```javascript
+const RightPanelSkeleton = () => {
+  return (
+    <div className='flex flex-col gap-2 w-52 my-2'>
+      <div className='flex gap-2 items-center'>
+        <div className='skeleton w-8 h-8 rounded-full shrink-0'></div>
+        <div className='flex flex-1 justify-between'>
+          <div className='flex flex-col gap-1'>
+            <div className='skeleton h-2 w-12 rounded-full'></div>
+            <div className='skeleton h-2 w-16 rounded-full'></div>
+          </div>
+          <div className='skeleton h-6 w-14 rounded-full'></div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default RightPanelSkeleton;
+```
+
+### Explanation2
+
+#### Container
+
+```javascript
+<div className='flex flex-col gap-2 w-52 my-2'>
+```
+
+- **Class `flex flex-col`**: Arranges children in a column.
+- **Class `gap-2`**: Adds space between children.
+- **Class `w-52`**: Sets the width to 52 units.
+- **Class `my-2`**: Adds vertical margin.
+
+#### Skeleton Item
+
+```javascript
+<div className='flex gap-2 items-center'>
+  <div className='skeleton w-8 h-8 rounded-full shrink-0'></div>
+  <div className='flex flex-1 justify-between'>
+    <div className='flex flex-col gap-1'>
+      <div className='skeleton h-2 w-12 rounded-full'></div>
+      <div className='skeleton h-2 w-16 rounded-full'></div>
+    </div>
+    <div className='skeleton h-6 w-14 rounded-full'></div>
+  </div>
+</div>
+```
+
+- **First `div` (Avatar Placeholder)**:
+  - **Class `skeleton w-8 h-8 rounded-full shrink-0`**: Represents the avatar. The `skeleton` class applies the skeleton styling, `w-8 h-8` sets width and height, `rounded-full` makes it circular, and `shrink-0` prevents shrinking.
+  
+- **Second `div` (Text and Button Placeholder)**:
+  - **Class `flex flex-1 justify-between`**: Arranges children in a row, makes the div take up available space, and justifies content between the edges.
+  
+- **Nested `div` (Text Placeholder)**:
+  - **Class `flex flex-col gap-1`**: Arranges children in a column with a small gap.
+  - **Class `skeleton h-2 w-12 rounded-full`**: Placeholder for the full name.
+  - **Class `skeleton h-2 w-16 rounded-full`**: Placeholder for the username.
+  
+- **Button Placeholder**:
+  - **Class `skeleton h-6 w-14 rounded-full`**: Represents the follow button with a skeleton effect.
+
+### Styling (Assumed)
+
+The `skeleton` class would typically apply a background color, gradient, or animation to simulate loading. Here is an example of what the CSS might look like:
+
+```css
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite linear;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+```
+
+### Summary5
+
+The `RightPanelSkeleton` component is a simple yet effective way to indicate that user data is loading. It maintains the layout of the `RightPanel` suggestions, providing a visual placeholder with the help of `div` elements styled to look like skeleton loaders. This improves the user experience by visually communicating that content is being fetched.
