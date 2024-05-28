@@ -768,3 +768,181 @@ The `Sidebar` component provides a vertical navigation menu for the application.
 - **User Profile Section**: Displays user's avatar, full name, and username, with a logout icon.
 
 The component uses responsive design principles to adjust the layout and visibility of elements based on screen size, ensuring a good user experience across different devices.
+
+## Important Note 6
+
+### `RightPanel` Component Overview
+
+The `RightPanel` component provides a section suggesting users to follow. This component fetches and displays a list of users with an option to follow them. It handles both loading and loaded states to enhance user experience.
+
+### Imports4
+
+```javascript
+import { Link } from "react-router-dom";
+import RightPanelSkeleton from "../skeletons/RightPanelSkeleton";
+import { USERS_FOR_RIGHT_PANEL } from "../../utils/db/dummy";
+```
+
+- **Link**: From `react-router-dom` for navigation.
+- **RightPanelSkeleton**: Component for displaying loading placeholders.
+- **USERS_FOR_RIGHT_PANEL**: Dummy data simulating the list of users to follow.
+
+### Component Definition4
+
+```javascript
+const RightPanel = () => {
+  const isLoading = false;
+
+  return (
+    <div className='hidden lg:block my-4 mx-2'>
+      <div className='bg-[#16181C] p-4 rounded-md sticky top-2'>
+        <p className='font-bold'>Who to follow</p>
+        <div className='flex flex-col gap-4'>
+          {isLoading && (
+            <>
+              <RightPanelSkeleton />
+              <RightPanelSkeleton />
+              <RightPanelSkeleton />
+              <RightPanelSkeleton />
+            </>
+          )}
+          {!isLoading &&
+            USERS_FOR_RIGHT_PANEL?.map((user) => (
+              <Link
+                to={`/profile/${user.username}`}
+                className='flex items-center justify-between gap-4'
+                key={user._id}
+              >
+                <div className='flex gap-2 items-center'>
+                  <div className='avatar'>
+                    <div className='w-8 rounded-full'>
+                      <img src={user.profileImg || "/avatar-placeholder.png"} />
+                    </div>
+                  </div>
+                  <div className='flex flex-col'>
+                    <span className='font-semibold tracking-tight truncate w-28'>
+                      {user.fullName}
+                    </span>
+                    <span className='text-sm text-slate-500'>@{user.username}</span>
+                  </div>
+                </div>
+                <div>
+                  <button
+                    className='btn bg-white text-black hover:bg-white hover:opacity-90 rounded-full btn-sm'
+                    onClick={(e) => e.preventDefault()}
+                  >
+                    Follow
+                  </button>
+                </div>
+              </Link>
+            ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+export default RightPanel;
+```
+
+### Explanation
+
+#### State Management
+
+```javascript
+const isLoading = false;
+```
+
+- **isLoading**: A boolean flag to indicate whether the data is still loading. For now, it is hardcoded to `false`.
+
+#### Main Container
+
+```javascript
+return (
+  <div className='hidden lg:block my-4 mx-2'>
+    <div className='bg-[#16181C] p-4 rounded-md sticky top-2'>
+      <p className='font-bold'>Who to follow</p>
+      <div className='flex flex-col gap-4'>
+        ...
+      </div>
+    </div>
+  </div>
+);
+```
+
+- **Outer div**: Hidden on small screens (`hidden lg:block`), adds margin on y-axis (`my-4`) and x-axis (`mx-2`).
+- **Inner div**: Styled to be sticky (remains in view on scroll), with a dark background, padding, and rounded corners.
+
+#### Loading State
+
+```javascript
+{isLoading && (
+  <>
+    <RightPanelSkeleton />
+    <RightPanelSkeleton />
+    <RightPanelSkeleton />
+    <RightPanelSkeleton />
+  </>
+)}
+```
+
+- If `isLoading` is true, it renders multiple `RightPanelSkeleton` components to indicate loading.
+
+#### Loaded State
+
+```javascript
+{!isLoading &&
+  USERS_FOR_RIGHT_PANEL?.map((user) => (
+    <Link
+      to={`/profile/${user.username}`}
+      className='flex items-center justify-between gap-4'
+      key={user._id}
+    >
+      <div className='flex gap-2 items-center'>
+        <div className='avatar'>
+          <div className='w-8 rounded-full'>
+            <img src={user.profileImg || "/avatar-placeholder.png"} />
+          </div>
+        </div>
+        <div className='flex flex-col'>
+          <span className='font-semibold tracking-tight truncate w-28'>
+            {user.fullName}
+          </span>
+          <span className='text-sm text-slate-500'>@{user.username}</span>
+        </div>
+      </div>
+      <div>
+        <button
+          className='btn bg-white text-black hover:bg-white hover:opacity-90 rounded-full btn-sm'
+          onClick={(e) => e.preventDefault()}
+        >
+          Follow
+        </button>
+      </div>
+    </Link>
+  ))}
+```
+
+- **Mapping through `USERS_FOR_RIGHT_PANEL`**:
+  - **Link**: Each user is wrapped in a `Link` that navigates to their profile.
+  - **User Information**: Displays user's avatar, full name, and username.
+  - **Follow Button**: A button that triggers a `preventDefault` action on click.
+
+#### Avatar
+
+```javascript
+<div className='avatar'>
+  <div className='w-8 rounded-full'>
+    <img src={user.profileImg || "/avatar-placeholder.png"} />
+  </div>
+</div>
+```
+
+- **Avatar Image**: Displays user's profile image, with a fallback to a placeholder image.
+
+### Summary4
+
+The `RightPanel` component serves as a sidebar for suggesting users to follow. It includes:
+
+- **Loading State**: Placeholder skeletons during data fetching.
+- **Loaded State**: A list of user suggestions with profile links and follow buttons.
+- **Responsive Design**: Visible only on large screens, styled for a clean, sticky sidebar appearance.
