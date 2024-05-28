@@ -454,3 +454,151 @@ export default LoginPage;
 ### Summary
 
 The `LoginPage` component is a form-based page where users can log in by entering their username and password. It uses state management to handle form inputs and provides a basic structure with styling and iconography to create a user-friendly interface. The form submission currently logs the form data to the console, and the layout adjusts responsively for different screen sizes. The component also includes a link to navigate to the signup page for users who don't have an account.
+
+## Important Note 4
+
+Let's break down the `HomePage` component step-by-step, explaining its structure, functionality, and purpose in detail.
+
+### Imports2
+
+```javascript
+import { useState } from "react";
+
+import Posts from "../../components/common/Posts";
+import CreatePost from "./CreatePost";
+```
+
+- **React:**
+  - `useState`: A React hook that allows you to add state to a functional component.
+- **Components:**
+  - `Posts`: A component that likely renders a list of posts.
+  - `CreatePost`: A component that likely provides a form or interface for creating a new post.
+
+### Component Definition and State Initialization2
+
+The `HomePage` component is defined as a functional component. Inside this component, the `useState` hook is used to manage the type of feed being displayed:
+
+```javascript
+const HomePage = () => {
+  const [feedType, setFeedType] = useState("forYou");
+```
+
+- **State:**
+  - `feedType`: A state variable that holds the current type of feed being displayed, which can be either `"forYou"` or `"following"`.
+  - `setFeedType`: A function to update the `feedType` state.
+
+### Main Component JSX2
+
+The `HomePage` component returns JSX that defines the structure of the home page:
+
+```javascript
+  return (
+    <>
+      <div className="flex-[4_4_0] mr-auto border-r border-gray-700 min-h-screen">
+        {/* Header */}
+        <div className="flex w-full border-b border-gray-700">
+          <div
+            className={
+              "flex justify-center flex-1 p-3 hover:bg-secondary transition duration-300 cursor-pointer relative"
+            }
+            onClick={() => setFeedType("forYou")}
+          >
+            For you
+            {feedType === "forYou" && (
+              <div className="absolute bottom-0 w-10 h-1 rounded-full bg-primary"></div>
+            )}
+          </div>
+          <div
+            className="flex justify-center flex-1 p-3 hover:bg-secondary transition duration-300 cursor-pointer relative"
+            onClick={() => setFeedType("following")}
+          >
+            Following
+            {feedType === "following" && (
+              <div className="absolute bottom-0 w-10 h-1 rounded-full bg-primary"></div>
+            )}
+          </div>
+        </div>
+
+        {/* CREATE POST INPUT */}
+        <CreatePost />
+
+        {/* POSTS */}
+        <Posts />
+      </div>
+    </>
+  );
+};
+```
+
+#### Structure and Styling
+
+- **Container `div`:**
+  - `className="flex-[4_4_0] mr-auto border-r border-gray-700 min-h-screen"`:
+    - `flex-[4_4_0]`: Custom flex-grow, flex-shrink, and flex-basis properties for layout.
+    - `mr-auto`: Margin-right auto for alignment.
+    - `border-r border-gray-700`: Right border with a specific color for separation.
+    - `min-h-screen`: Minimum height to cover the full viewport height.
+
+#### Header Section
+
+- **Header Container:**
+  - `className="flex w-full border-b border-gray-700"`:
+    - Flexbox container that spans the full width and has a bottom border for separation.
+
+- **Feed Type Buttons:**
+  - **For You Button:**
+    - `className={"flex justify-center flex-1 p-3 hover:bg-secondary transition duration-300 cursor-pointer relative"}`:
+      - Flex container that centers content horizontally.
+      - `flex-1`: Takes up equal space among siblings.
+      - `p-3`: Padding.
+      - `hover:bg-secondary`: Background color change on hover.
+      - `transition duration-300`: Smooth transition effect.
+      - `cursor-pointer`: Pointer cursor on hover.
+      - `relative`: Positioned relative for child positioning.
+
+    - `onClick={() => setFeedType("forYou")}`:
+      - Updates `feedType` to `"forYou"` when clicked.
+
+    - Conditional Highlight:
+      - `{feedType === "forYou" && (<div className="absolute bottom-0 w-10 h-1 rounded-full bg-primary"></div>)}`:
+        - Renders a bottom highlight if `feedType` is `"forYou"`.
+        - Positioned absolutely at the bottom with specific dimensions and styling.
+
+  - **Following Button:**
+    - Similar structure and behavior to the "For You" button, but for the `"following"` feed type.
+
+#### Create Post Section
+
+- **CreatePost Component:**
+  - `<CreatePost />`:
+    - This component likely contains a form or interface for creating a new post. It is rendered below the header.
+
+#### Posts Section
+
+- **Posts Component:**
+  - `<Posts />`:
+    - This component likely renders a list of posts. It is displayed below the CreatePost component.
+
+### Export Statement2
+
+- **Default Export:**
+  - `export default HomePage;`
+  - This statement exports the `HomePage` component so it can be imported and used in other parts of the application.
+
+### Summary2
+
+The `HomePage` component is structured to provide a user interface for viewing and interacting with different types of post feeds. It includes:
+
+- **State Management:**
+  - Manages the type of feed being displayed (`forYou` or `following`).
+
+- **Header Section:**
+  - Contains buttons to switch between the "For You" and "Following" feeds, with visual feedback indicating the active feed.
+
+- **Create Post Section:**
+  - Contains a component (`CreatePost`) for creating new posts.
+
+- **Posts Section:**
+  - Contains a component (`Posts`) for displaying a list of posts.
+
+The layout is responsive and uses flexbox for alignment and distribution of space, with hover effects and smooth transitions for a better user experience.
