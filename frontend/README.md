@@ -1326,3 +1326,83 @@ export default Posts;
 ### Summary8
 
 The `Posts` component provides a user interface for displaying posts with a robust handling of different states. It uses conditional rendering to show loading skeletons, an empty state message, or the list of posts based on the current state. This approach ensures a smooth and informative user experience while the data is being fetched and displayed.
+
+## Important Note 10
+
+### `PostSkeleton` Component Overview
+
+The `PostSkeleton` component provides a placeholder skeleton UI that mimics the layout of a post while the actual post data is being loaded. This enhances the user experience by giving visual feedback that content is being loaded.
+
+### Component Structure5
+
+1. **Avatar Skeleton**: A circular skeleton that represents the profile image.
+2. **Text Skeletons**: Rectangular skeletons that represent the username and timestamp.
+3. **Content Skeleton**: A large rectangular skeleton that represents the main content of the post.
+
+### Implementation5
+
+```javascript
+const PostSkeleton = () => {
+  return (
+    <div className='flex flex-col gap-4 w-full p-4'>
+      <div className='flex gap-4 items-center'>
+        <div className='skeleton w-10 h-10 rounded-full shrink-0'></div>
+        <div className='flex flex-col gap-2'>
+          <div className='skeleton h-2 w-12 rounded-full'></div>
+          <div className='skeleton h-2 w-24 rounded-full'></div>
+        </div>
+      </div>
+      <div className='skeleton h-40 w-full'></div>
+    </div>
+  );
+};
+
+export default PostSkeleton;
+```
+
+### Explanation5
+
+#### Container Structure
+
+- **Parent Div**:
+  - The parent `div` has classes `flex`, `flex-col`, `gap-4`, `w-full`, and `p-4` to create a column layout with spacing between items and padding around the edges.
+
+#### Avatar Skeleton
+
+```javascript
+<div className='skeleton w-10 h-10 rounded-full shrink-0'></div>
+```
+
+- **Skeleton**: The `skeleton` class provides the skeleton loading effect.
+- **Size**: `w-10 h-10` sets the width and height to 2.5rem each, making it a circle.
+- **Rounded**: `rounded-full` ensures the skeleton is circular.
+- **Shrink**: `shrink-0` prevents the avatar from shrinking.
+
+#### Text Skeletons
+
+```javascript
+<div className='flex flex-col gap-2'>
+  <div className='skeleton h-2 w-12 rounded-full'></div>
+  <div className='skeleton h-2 w-24 rounded-full'></div>
+</div>
+```
+
+- **Container**: The `div` with classes `flex`, `flex-col`, and `gap-2` organizes the text skeletons vertically with spacing.
+- **Skeleton Lines**: Each `div` inside has the `skeleton` class for the loading effect.
+  - **Height**: `h-2` sets the height to 0.5rem.
+  - **Width**: Varies (`w-12` and `w-24`) to simulate different text lengths.
+  - **Rounded**: `rounded-full` gives the skeletons rounded edges.
+
+#### Content Skeleton
+
+```javascript
+<div className='skeleton h-40 w-full'></div>
+```
+
+- **Skeleton**: The `skeleton` class provides the loading effect.
+- **Height**: `h-40` sets the height to 10rem.
+- **Width**: `w-full` makes the skeleton take the full width of its container.
+
+### Summary9
+
+The `PostSkeleton` component effectively uses skeleton elements to provide a visual placeholder for a post while the actual data is being fetched. This component consists of a circular skeleton for the profile picture, rectangular skeletons for the username and timestamp, and a large rectangular skeleton for the post content. The use of utility classes from a CSS framework ensures that the skeletons are well-styled and aligned, providing a clean and consistent user experience during loading.
