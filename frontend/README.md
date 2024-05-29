@@ -1047,3 +1047,186 @@ The `skeleton` class would typically apply a background color, gradient, or anim
 ### Summary5
 
 The `RightPanelSkeleton` component is a simple yet effective way to indicate that user data is loading. It maintains the layout of the `RightPanel` suggestions, providing a visual placeholder with the help of `div` elements styled to look like skeleton loaders. This improves the user experience by visually communicating that content is being fetched.
+
+## Important Note 8
+
+### `CreatePost` Component Overview
+
+The `CreatePost` component allows users to create a new post by entering text and optionally uploading an image. It features a form with a textarea for text input, an image upload option, and a submit button. The component also provides feedback for loading and error states.
+
+### Component Structure4
+
+1. **State Management**:
+   - `text`: Stores the text entered by the user.
+   - `img`: Stores the uploaded image's data URL.
+   - `imgRef`: A reference to the hidden file input for image uploads.
+
+2. **Event Handlers**:
+   - `handleSubmit`: Handles the form submission.
+   - `handleImgChange`: Handles the image file input change.
+
+### Implementation1
+
+```javascript
+import { CiImageOn } from "react-icons/ci";
+import { BsEmojiSmileFill } from "react-icons/bs";
+import { useRef, useState } from "react";
+import { IoCloseSharp } from "react-icons/io5";
+
+const CreatePost = () => {
+  const [text, setText] = useState("");
+  const [img, setImg] = useState(null);
+
+  const imgRef = useRef(null);
+
+  const isPending = false;
+  const isError = false;
+
+  const data = {
+    profileImg: "/avatars/boy1.png",
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    alert("Post created successfully");
+  };
+
+  const handleImgChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setImg(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  return (
+    <div className='flex p-4 items-start gap-4 border-b border-gray-700'>
+      <div className='avatar'>
+        <div className='w-8 rounded-full'>
+          <img src={data.profileImg || "/avatar-placeholder.png"} />
+        </div>
+      </div>
+      <form className='flex flex-col gap-2 w-full' onSubmit={handleSubmit}>
+        <textarea
+          className='textarea w-full p-0 text-lg resize-none border-none focus:outline-none  border-gray-800'
+          placeholder='What is happening?!'
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+        />
+        {img && (
+          <div className='relative w-72 mx-auto'>
+            <IoCloseSharp
+              className='absolute top-0 right-0 text-white bg-gray-800 rounded-full w-5 h-5 cursor-pointer'
+              onClick={() => {
+                setImg(null);
+                imgRef.current.value = null;
+              }}
+            />
+            <img src={img} className='w-full mx-auto h-72 object-contain rounded' />
+          </div>
+        )}
+
+        <div className='flex justify-between border-t py-2 border-t-gray-700'>
+          <div className='flex gap-1 items-center'>
+            <CiImageOn
+              className='fill-primary w-6 h-6 cursor-pointer'
+              onClick={() => imgRef.current.click()}
+            />
+            <BsEmojiSmileFill className='fill-primary w-5 h-5 cursor-pointer' />
+          </div>
+          <input type='file' hidden ref={imgRef} onChange={handleImgChange} />
+          <button className='btn btn-primary rounded-full btn-sm text-white px-4'>
+            {isPending ? "Posting..." : "Post"}
+          </button>
+        </div>
+        {isError && <div className='text-red-500'>Something went wrong</div>}
+      </form>
+    </div>
+  );
+};
+
+export default CreatePost;
+```
+
+### Explanation1
+
+#### Avatar1
+
+```javascript
+<div className='avatar'>
+  <div className='w-8 rounded-full'>
+    <img src={data.profileImg || "/avatar-placeholder.png"} />
+  </div>
+</div>
+```
+
+- **Avatar Section**: Displays the user's avatar. If the `profileImg` is not available, it defaults to a placeholder image.
+
+#### Text Area
+
+```javascript
+<textarea
+  className='textarea w-full p-0 text-lg resize-none border-none focus:outline-none  border-gray-800'
+  placeholder='What is happening?!'
+  value={text}
+  onChange={(e) => setText(e.target.value)}
+/>
+```
+
+- **Text Area**: Allows the user to input text for the post. The value is managed by the `text` state, and changes are handled by updating the state.
+
+#### Image Preview
+
+```javascript
+{img && (
+  <div className='relative w-72 mx-auto'>
+    <IoCloseSharp
+      className='absolute top-0 right-0 text-white bg-gray-800 rounded-full w-5 h-5 cursor-pointer'
+      onClick={() => {
+        setImg(null);
+        imgRef.current.value = null;
+      }}
+    />
+    <img src={img} className='w-full mx-auto h-72 object-contain rounded' />
+  </div>
+)}
+```
+
+- **Image Preview**: If an image is uploaded, it is displayed with a close button. Clicking the close button removes the image and resets the file input.
+
+#### Bottom Bar
+
+```javascript
+<div className='flex justify-between border-t py-2 border-t-gray-700'>
+  <div className='flex gap-1 items-center'>
+    <CiImageOn
+      className='fill-primary w-6 h-6 cursor-pointer'
+      onClick={() => imgRef.current.click()}
+    />
+    <BsEmojiSmileFill className='fill-primary w-5 h-5 cursor-pointer' />
+  </div>
+  <input type='file' hidden ref={imgRef} onChange={handleImgChange} />
+  <button className='btn btn-primary rounded-full btn-sm text-white px-4'>
+    {isPending ? "Posting..." : "Post"}
+  </button>
+</div>
+```
+
+- **Icons**: The `CiImageOn` icon triggers the file input for image uploads, and the `BsEmojiSmileFill` icon is for potential future emoji support.
+- **File Input**: Hidden input field for uploading images, managed by the `imgRef` reference.
+- **Submit Button**: Button to submit the post. Changes to a loading state if `isPending` is true.
+
+#### Error Handling
+
+```javascript
+{isError && <div className='text-red-500'>Something went wrong</div>}
+```
+
+- **Error Message**: Displays an error message if `isError` is true.
+
+### Summary7
+
+The `CreatePost` component provides a user interface for creating new posts with text and images. It features state management for form data, image preview functionality, and handles form submission. The component is styled with classes for layout and aesthetics, ensuring a user-friendly experience.
