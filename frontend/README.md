@@ -1406,3 +1406,50 @@ export default PostSkeleton;
 ### Summary9
 
 The `PostSkeleton` component effectively uses skeleton elements to provide a visual placeholder for a post while the actual data is being fetched. This component consists of a circular skeleton for the profile picture, rectangular skeletons for the username and timestamp, and a large rectangular skeleton for the post content. The use of utility classes from a CSS framework ensures that the skeletons are well-styled and aligned, providing a clean and consistent user experience during loading.
+
+## Important Note 11
+
+### `Post` Component Overview
+
+The `Post` component renders a single post with functionalities such as liking, commenting, and deleting the post. It also includes a modal for viewing and adding comments.
+
+### Component Structure6
+
+1. **Avatar and User Information**: Displays the user's profile picture, full name, username, and the time since the post was made.
+2. **Post Content**: Includes the post text and optionally an image.
+3. **Post Actions**: Allows users to comment, repost, like, and bookmark the post.
+4. **Comments Modal**: Shows comments and provides a form to add a new comment.
+
+### Explanation6
+
+#### Post Header
+
+- **Avatar and User Information**:
+  - The avatar is wrapped in a `Link` to the user's profile.
+  - The user's full name and username are displayed alongside the time since the post was made.
+  - If the post belongs to the logged-in user (`isMyPost`), a delete icon (`FaTrash`) is displayed, which triggers the `handleDeletePost` function.
+
+#### Post Content
+
+- **Text and Image**:
+  - The post's text is displayed.
+  - If the post has an image, it is displayed with a fixed height and contained within the available space.
+
+#### Post Actions
+
+- **Comment, Repost, Like, and Bookmark**:
+  - Icons for commenting, reposting, liking, and bookmarking are displayed with counts.
+  - Clicking the comment icon opens a modal (`dialog`) for viewing and adding comments.
+  - The like icon toggles based on whether the post is liked or not, triggering the `handleLikePost` function.
+  - The bookmark icon is a placeholder for bookmarking functionality.
+
+#### Comments Modal
+
+- **Displaying Comments**:
+  - The modal displays existing comments.
+  - A form at the bottom allows users to add new comments, handled by the `handlePostComment` function.
+  - The modal includes a backdrop to close it.
+
+### Summary10
+
+The `Post` component effectively displays a social media post with user information, content, and interaction options. It includes a modal for managing comments, enhancing the interactivity and user experience of the application. The component uses conditional rendering and state management to handle various functionalities such as liking, commenting, and deleting posts.
