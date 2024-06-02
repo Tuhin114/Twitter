@@ -14,6 +14,7 @@
    12. `npm install react-router-dom react-icons`
    13. You can search any component name such as input, skeleton in daisy UI to see more in details.
    14. `npm i @tanstack/react-query`
+   15. `react-hot-toast`
 
 ## Important Note 1
 
@@ -1901,3 +1902,119 @@ const ProfileHeaderSkeleton = () => {
 ### Conclusion
 
 The `ProfileHeaderSkeleton` component provides a visual representation of a loading state for the profile header. It creates a structure with skeleton elements mimicking the layout of the actual content to give users an idea of where content will be displayed while the page is loading.
+
+## Important Note 17
+
+This code snippet is written in JavaScript, specifically using the React framework with the `useState`, `useMutation`, and `useQueryClient` hooks from the `react-query` library (now known as `tanstack/react-query`). Let's break down the code step by step.
+
+### Breakdown of the Code
+
+#### 1. State Initialization with `useState`
+
+```javascript
+const [formData, setFormData] = useState({
+  email: "",
+  username: "",
+  fullName: "",
+  password: "",
+});
+```
+
+- `useState` is a React hook used to declare a state variable and a function to update it.
+- `formData` is the state variable initialized with an object containing fields for `email`, `username`, `fullName`, and `password`, all set to empty strings.
+- `setFormData` is the function used to update the `formData` state.
+
+#### 2. Initializing the Query Client
+
+```javascript
+const queryClient = useQueryClient();
+```
+
+- `useQueryClient` is a hook from `react-query` that gives access to the query client instance, which manages the caching and synchronization of server state.
+
+#### 3. Setting up the Mutation with `useMutation`
+
+```javascript
+const { mutate, isError, isPending, error } = useMutation({
+  mutationFn: async ({ email, username, fullName, password }) => {
+    try {
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, username, fullName, password }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to create account");
+      console.log(data);
+      return data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  },
+  onSuccess: () => {
+    toast.success("Account created successfully");
+
+    queryClient.invalidateQueries({ queryKey: ["authUser"] });
+  },
+});
+```
+
+- `useMutation` is a hook from `react-query` used to perform mutations, i.e., create, update, or delete data on the server.
+- The `useMutation` hook returns an object containing several properties, including `mutate`, `isError`, `isPending`, and `error`.
+  - `mutate`: A function to trigger the mutation.
+  - `isError`: A boolean indicating if there was an error during the mutation.
+  - `isPending`: A boolean indicating if the mutation is in progress.
+  - `error`: The error object if an error occurred.
+
+#### 4. Defining the Mutation Function (`mutationFn`)
+
+```javascript
+mutationFn: async ({ email, username, fullName, password }) => {
+  try {
+    const res = await fetch("/api/auth/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, username, fullName, password }),
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Failed to create account");
+    console.log(data);
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+```
+
+- `mutationFn` is an asynchronous function that performs the signup process.
+- It makes a POST request to `/api/auth/signup` with the provided user data.
+- The request headers specify that the content type is `application/json`.
+- The request body is a JSON stringified version of the `email`, `username`, `fullName`, and `password`.
+- The response is parsed to JSON. If the response is not okay (`res.ok` is false), an error is thrown.
+- The parsed data is logged to the console and returned.
+
+#### 5. Handling the Mutation Success (`onSuccess`)
+
+```javascript
+onSuccess: () => {
+  toast.success("Account created successfully");
+
+  queryClient.invalidateQueries({ queryKey: ["authUser"] });
+}
+```
+
+- `onSuccess` is a callback function that runs when the mutation is successful.
+- It displays a success message using `toast.success`.
+- It invalidates the query with the key `["authUser"]` to ensure that any cached data for this query is refetched and updated.
+
+### Summary17
+
+This code snippet initializes a state for form data, sets up a query client, and defines a mutation for signing up a user. It makes a POST request to the signup endpoint, handles success and error cases, and ensures the client cache is updated appropriately after a successful signup.
