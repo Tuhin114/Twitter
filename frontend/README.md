@@ -13,6 +13,7 @@
    11. see the theme change in index.html
    12. `npm install react-router-dom react-icons`
    13. You can search any component name such as input, skeleton in daisy UI to see more in details.
+   14. `npm i @tanstack/react-query`
 
 ## Important Note 1
 
