@@ -2151,3 +2151,121 @@ This `LoginPage` component handles user login by:
 2. Using `useMutation` to define a login mutation that sends a POST request with the credentials.
 3. Handling the success case by invalidating the `authUser` query to refresh the authentication state.
 4. Submitting the form data using the `handleSubmit` function, which triggers the mutation.
+
+## Important Note 19
+
+This code snippet sets up a logout mutation and uses React Query to manage authentication state in a React application. Here's a detailed explanation:
+
+1. **Query Client**:
+
+   ```javascript
+   const queryClient = useQueryClient();
+   ```
+
+   This initializes an instance of the query client using the `useQueryClient` hook from React Query. This client is used to interact with the query cache.
+
+2. **Logout Mutation**:
+
+   ```javascript
+   const { mutate: logout } = useMutation({
+     mutationFn: async () => {
+       try {
+         const res = await fetch("/api/auth/logout", {
+           method: "POST",
+         });
+         const data = await res.json();
+
+         if (!res.ok) {
+           throw new Error(data.error || "Something went wrong");
+         }
+       } catch (error) {
+         throw new Error(error);
+       }
+     },
+     onSuccess: () => {
+       queryClient.invalidateQueries({ queryKey: ["authUser"] });
+     },
+     onError: () => {
+       toast.error("Logout failed");
+     },
+   });
+   ```
+
+   - **Destructuring `useMutation`**:
+
+     ```javascript
+     const { mutate: logout } = useMutation({...})
+     ```
+
+     This destructures the `useMutation` return value, renaming `mutate` to `logout` for clarity.
+
+   - **Mutation Function**:
+
+     ```javascript
+     mutationFn: async () => {...}
+     ```
+
+     This function performs the logout request. It sends a POST request to `/api/auth/logout` without any body content.
+
+     - **Request Handling**:
+
+       ```javascript
+       const res = await fetch("/api/auth/logout", {
+         method: "POST",
+       });
+       const data = await res.json();
+
+       if (!res.ok) {
+         throw new Error(data.error || "Something went wrong");
+       }
+       ```
+
+       This sends a POST request to the server to log out the user. If the response is not OK, it throws an error with the error message from the server or a default message.
+
+     - **Error Handling**:
+
+       ```javascript
+       catch (error) {
+         throw new Error(error);
+       }
+       ```
+
+       If any error occurs during the request, it is caught and rethrown.
+
+   - **On Success**:
+
+     ```javascript
+     onSuccess: () => {
+       queryClient.invalidateQueries({ queryKey: ["authUser"] });
+     },
+     ```
+
+     This function is called when the mutation is successful. It invalidates the `authUser` query, causing it to refetch the data, ensuring that the application state is updated and the user is logged out.
+
+   - **On Error**:
+
+     ```javascript
+     onError: () => {
+       toast.error("Logout failed");
+     },
+     ```
+
+     This function is called when the mutation fails. It displays an error message using a toast notification.
+
+3. **Auth User Query**:
+
+   ```javascript
+   const { data: authUser } = useQuery({ queryKey: ["authUser"] });
+   ```
+
+   This sets up a query to fetch the current authenticated user data using the `useQuery` hook from React Query. The `queryKey` of `["authUser"]` is used to identify this query in the cache. The fetched data is stored in the `authUser` variable.
+
+### Summary19
+
+This code handles user logout by:
+
+1. Initializing a query client to interact with the query cache.
+2. Setting up a mutation for logging out the user via a POST request to `/api/auth/logout`.
+3. Invalidating the `authUser` query upon successful logout to update the authentication state.
+4. Displaying an error message if the logout request fails.
+5. Fetching the current authenticated user data and storing it in the `authUser` variable.
