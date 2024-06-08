@@ -2597,3 +2597,130 @@ Both functions handle date formatting in a user-friendly way:
 - `formatMemberSinceDate` provides an absolute date format indicating when a user joined (e.g., "Joined January 2021").
 
 These functions enhance the user experience by displaying dates in a more readable and meaningful way.
+
+## Important Note 24
+
+Let's break down and explain the provided code step by step. This React component allows a user to create a post with text and an image. It uses React Query for managing server state and React hooks for managing local state.
+
+### 1. State Initialization24
+
+```javascript
+const [text, setText] = useState("");
+const [img, setImg] = useState(null);
+const imgRef = useRef(null);
+```
+
+#### Explanation24
+
+- `useState` initializes state variables:
+  - `text` stores the post's text content.
+  - `img` stores the image data.
+- `useRef` creates a reference to the image input element (`imgRef`), although `imgRef` is declared but not used in the provided code.
+
+### 2. Fetching Authenticated User Data
+
+```javascript
+const { data: authUser } = useQuery({ queryKey: ["authUser"] });
+const queryClient = useQueryClient();
+```
+
+#### Explanation25
+
+- `useQuery` fetches data about the authenticated user and stores it in the `authUser` variable.
+- `useQueryClient` initializes a query client instance, which is used to interact with the query cache.
+
+### 3. Create Post Mutation
+
+```javascript
+const {
+  mutate: createPost,
+  isPending,
+  isError,
+  error,
+} = useMutation({
+  mutationFn: async ({ text, img }) => {
+    try {
+      const res = await fetch("/api/posts/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ text, img }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Something went wrong");
+      }
+      return data;
+    } catch (error) {
+      throw new Error(error);
+    }
+  },
+
+  onSuccess: () => {
+    setText("");
+    setImg(null);
+    toast.success("Post created successfully");
+    queryClient.invalidateQueries({ queryKey: ["posts"] });
+  },
+});
+```
+
+#### Explanation26
+
+- **Mutation Hook**:
+  - `useMutation` handles the creation of a post.
+  - `mutate` is renamed to `createPost`, and other variables (`isPending`, `isError`, `error`) track the state of the mutation.
+
+- **mutationFn**:
+  - Sends a POST request to create a new post.
+  - The request body contains the text and image data.
+  - Throws an error if the response is not OK.
+
+- **onSuccess**:
+  - Resets the text and image state.
+  - Displays a success message.
+  - Invalidates the `posts` query to refresh the list of posts.
+
+### 4. Handle Form Submission
+
+```javascript
+const handleSubmit = (e) => {
+  e.preventDefault();
+  createPost({ text, img });
+};
+```
+
+- `handleSubmit` prevents the default form submission behavior.
+- Calls `createPost` with the current text and image data.
+
+### 5. Handle Image Change
+
+```javascript
+const handleImgChange = (e) => {
+  const file = e.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      setImg(reader.result);
+    };
+    reader.readAsDataURL(file);
+  }
+};
+```
+
+- `handleImgChange` handles the change event for the image input.
+- Reads the selected file and converts it to a Base64 string using `FileReader`.
+- Updates the `img` state with the Base64 string.
+
+### Summary24
+
+This React component allows a user to create a post with text and an optional image. It performs the following key tasks:
+
+1. **State Management**: Uses `useState` to manage the text and image input states.
+2. **Fetching Authenticated User**: Uses `useQuery` to fetch data about the authenticated user.
+3. **Post Creation**: Uses `useMutation` to handle the post creation process, including sending a POST request to the server.
+4. **Form Handling**: Uses `handleSubmit` to manage form submission and `handleImgChange` to manage image input changes.
+5. **Feedback and Cache Invalidation**: Provides user feedback on successful post creation and updates the query cache to reflect the new post.
+
+By managing these aspects, the component ensures a smooth user experience for creating posts with text and images.
