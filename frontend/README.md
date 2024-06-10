@@ -2952,3 +2952,147 @@ export default useFollow;
 ### Summary28
 
 The `useFollow` custom hook provides a streamlined way to manage the follow action in a React application. It leverages React Query's mutation capabilities to handle the asynchronous follow operation and update the query cache accordingly. Additionally, it uses `react-hot-toast` to provide user feedback on errors. This hook encapsulates the logic needed to follow users and ensures the application state is updated correctly after a follow action.
+
+## Important Note 27
+
+Let's break down and explain the provided code. This snippet is designed to manage fetching and deleting notifications using React Query. It includes both `useQuery` for fetching notifications and `useMutation` for deleting them.
+
+### 1. Fetching Notifications
+
+```javascript
+const queryClient = useQueryClient();
+const { data: notifications, isLoading } = useQuery({
+ queryKey: ["notifications"],
+ queryFn: async () => {
+  try {
+   const res = await fetch("/api/notifications");
+   const data = await res.json();
+   if (!res.ok) throw new Error(data.error || "Something went wrong");
+   return data;
+  } catch (error) {
+   throw new Error(error);
+  }
+ },
+});
+```
+
+- **Query Client**:
+
+  ```javascript
+  const queryClient = useQueryClient();
+  ```
+
+  - `useQueryClient` is used to get the query client instance, which is necessary for managing the query cache.
+
+- **Fetching Notifications with `useQuery`**:
+
+  ```javascript
+  const { data: notifications, isLoading } = useQuery({
+      queryKey: ["notifications"],
+      queryFn: async () => {
+          try {
+              const res = await fetch("/api/notifications");
+              const data = await res.json();
+              if (!res.ok) throw new Error(data.error || "Something went wrong");
+              return data;
+          } catch (error) {
+              throw new Error(error);
+          }
+      },
+  });
+  ```
+
+  - **useQuery Hook**:
+    - Fetches notifications from the API endpoint `/api/notifications`.
+    - `queryKey: ["notifications"]` uniquely identifies this query in the cache.
+    - `queryFn` is an asynchronous function that:
+      - Sends a GET request to fetch notifications.
+      - Parses the response as JSON.
+      - Throws an error if the response is not OK.
+
+- **Returned Values**:
+  - `notifications`: Contains the fetched notifications data if the request is successful.
+  - `isLoading`: Indicates if the query is still loading data.
+
+### 2. Deleting Notifications
+
+```javascript
+const { mutate: deleteNotifications } = useMutation({
+ mutationFn: async () => {
+  try {
+   const res = await fetch("/api/notifications", {
+    method: "DELETE",
+   });
+   const data = await res.json();
+
+   if (!res.ok) throw new Error(data.error || "Something went wrong");
+   return data;
+  } catch (error) {
+   throw new Error(error);
+  }
+ },
+ onSuccess: () => {
+  toast.success("Notifications deleted successfully");
+  queryClient.invalidateQueries({ queryKey: ["notifications"] });
+ },
+ onError: (error) => {
+  toast.error(error.message);
+ },
+});
+```
+
+- **Mutation Definition**:
+
+  ```javascript
+  const { mutate: deleteNotifications } = useMutation({
+      mutationFn: async () => {
+          try {
+              const res = await fetch("/api/notifications", {
+                  method: "DELETE",
+              });
+              const data = await res.json();
+
+              if (!res.ok) throw new Error(data.error || "Something went wrong");
+              return data;
+          } catch (error) {
+              throw new Error(error);
+          }
+      },
+      onSuccess: () => {
+          toast.success("Notifications deleted successfully");
+          queryClient.invalidateQueries({ queryKey: ["notifications"] });
+      },
+      onError: (error) => {
+          toast.error(error.message);
+      },
+  });
+  ```
+
+  - **useMutation Hook**:
+    - Manages the mutation for deleting notifications.
+    - `mutationFn` is an asynchronous function that:
+      - Sends a DELETE request to `/api/notifications`.
+      - Parses the response as JSON.
+      - Throws an error if the response is not OK.
+
+- **Success and Error Handling**:
+  - **onSuccess**:
+    - Displays a success toast notification.
+    - Invalidates the `notifications` query to refresh the data in the cache.
+  - **onError**:
+    - Displays an error toast notification if the mutation fails.
+
+### Summary29
+
+This code snippet efficiently manages fetching and deleting notifications using React Query:
+
+1. **Fetching Notifications**:
+   - Uses `useQuery` to fetch notifications from the API.
+   - Handles the loading state and potential errors during the fetch process.
+
+2. **Deleting Notifications**:
+   - Uses `useMutation` to handle the deletion of notifications.
+   - Provides user feedback using `react-hot-toast`.
+   - Invalidates the `notifications` query to ensure the UI reflects the updated state after deletion.
+
+By combining these functionalities, the component ensures a smooth user experience for managing notifications, including real-time updates and feedback.
