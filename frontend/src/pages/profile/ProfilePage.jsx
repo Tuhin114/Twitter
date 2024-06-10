@@ -15,7 +15,7 @@ import { useQuery } from "@tanstack/react-query";
 import { formatMemberSinceDate } from "../../utils/date";
 
 import useFollow from "../../components/hooks/useFollow";
-// import useUpdateUserProfile from "./../components/hooks/useUpdateUserProfile";
+import useUpdateUserProfile from "./../components/hooks/useUpdateUserProfile";
 
 const ProfilePage = () => {
   const [coverImg, setCoverImg] = useState(null);
@@ -51,7 +51,7 @@ const ProfilePage = () => {
     },
   });
 
-  // const { isUpdatingProfile, updateProfile } = useUpdateUserProfile();
+  const { isUpdatingProfile, updateProfile } = useUpdateUserProfile();
 
   const isMyProfile = authUser._id === user?._id;
   const memberSinceDate = formatMemberSinceDate(user?.createdAt);

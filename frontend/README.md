@@ -3418,3 +3418,122 @@ return (
 ### Summary32
 
 This code ensures a smooth user experience by providing feedback during the profile update process and resetting the form state upon completion. The use of `await` ensures that subsequent actions only occur after the profile has been successfully updated. The dynamic button text enhances user feedback, indicating when the profile update is in progress.
+
+## Important Note 29
+
+This code defines a custom hook, `useUpdateUserProfile`, which handles updating the user's profile using React Query for data fetching and state management. Let's go through the code step-by-step to understand its functionality in detail.
+
+### Code Breakdown4
+
+#### 1. Import Statements
+
+```javascript
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
+```
+
+- `useMutation` and `useQueryClient` are imported from `@tanstack/react-query` to handle mutation and query invalidation.
+- `toast` from `react-hot-toast` is used for displaying success and error messages.
+
+#### 2. `useUpdateUserProfile` Hook Definition
+
+```javascript
+const useUpdateUserProfile = () => {
+  const queryClient = useQueryClient();
+```
+
+- `queryClient` is instantiated using `useQueryClient` to manage and invalidate queries.
+
+#### 3. `useMutation` Setup
+
+```javascript
+  const { mutateAsync: updateProfile, isPending: isUpdatingProfile } = useMutation({
+    mutationFn: async (formData) => {
+      try {
+        const res = await fetch(`/api/users/update`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.error || "Something went wrong");
+        }
+        return data;
+      } catch (error) {
+        throw new Error(error.message);
+      }
+    },
+    onSuccess: () => {
+      toast.success("Profile updated successfully");
+      Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["authUser"] }),
+        queryClient.invalidateQueries({ queryKey: ["userProfile"] }),
+      ]);
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+```
+
+- `useMutation` is used to define a mutation for updating the user profile.
+  - `mutationFn` is the asynchronous function that performs the update by making a POST request to `/api/users/update` with `formData` as the body.
+  - On success (`onSuccess`), a success toast message is displayed, and relevant queries (`authUser` and `userProfile`) are invalidated to refresh the data.
+  - On error (`onError`), an error toast message is displayed.
+  - `mutateAsync` is renamed to `updateProfile` for clarity, and `isPending` is renamed to `isUpdatingProfile` to indicate the mutation status.
+
+#### 4. Return Values
+
+```javascript
+  return { updateProfile, isUpdatingProfile };
+};
+
+export default useUpdateUserProfile;
+```
+
+- The hook returns the `updateProfile` function and `isUpdatingProfile` status.
+
+### Usage in a Component
+
+Here’s how you might use this hook in a component:
+
+```javascript
+const [profileImg, setProfileImg] = useState(null);
+const [coverImg, setCoverImg] = useState(null);
+const { updateProfile, isUpdatingProfile } = useUpdateUserProfile();
+
+return (
+  <button
+    onClick={async () => {
+      await updateProfile({ coverImg, profileImg });
+      setProfileImg(null);
+      setCoverImg(null);
+    }}
+  >
+    {isUpdatingProfile ? "Updating..." : "Update"}
+  </button>
+);
+```
+
+### Workflow Summary2
+
+1. **Profile Update Request**:
+   - When the button is clicked, the `updateProfile` function is called with `coverImg` and `profileImg` as arguments.
+   - The function sends a POST request to `/api/users/update` with the image data.
+
+2. **Handling Response**:
+   - If the request is successful, a success message is shown, and the queries `authUser` and `userProfile` are invalidated to refresh the data.
+   - If the request fails, an error message is shown.
+
+3. **State Reset**:
+   - After the update, the local state for `coverImg` and `profileImg` is reset to `null`.
+
+4. **Dynamic Button Text**:
+   - The button text shows "Updating..." while the update is in progress and "Update" when the update is not in progress.
+
+### Summary33
+
+This custom hook encapsulates the logic for updating a user profile, including making the network request, handling success and error states, and invalidating relevant queries. It simplifies the component code and provides a clear, reusable interface for profile updates.
